@@ -1,0 +1,27 @@
+<%- include('partials/header'); -%>
+
+<main class="form-signin w-100 m-auto">
+    <h1>Weight Tracker</h1>
+    <p>Sign in to log your weight</p>
+  <form action="/" method="POST">
+    <img class="mb-4" src="assets/scales.png" alt="" width="72" height="72">
+
+    <div class="form-floating">
+      <input type="email" name="EMAIL" class="form-control" id="floatingInput" placeholder="name@example.com" required>
+      <label for="floatingInput">Email address</label>
+    </div>
+    <div class="form-floating">
+      <input type="password" name="PASSWORD" class="form-control" id="floatingPassword" placeholder="Password" required>
+      <label for="floatingPassword">Password</label>
+    </div>
+
+    <div class="checkbox mb-3">
+      <label>
+        <input type="checkbox" value="remember-me"> Remember me
+      </label>
+    </div>
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+
+      <p>Or <a href="/signup">Sign Up</a> to create an account</p>
+
+    <%- include('partials/footer'); -%>

@@ -1,0 +1,26 @@
+<%- include('partials/header'); -%>
+
+<main class="form-signin w-100 m-auto">
+    <a href="/" class="heading"><h1>Weight Tracker</h1></a>
+    <p>Sign up to create an account</p>
+  <form action="/signup" method="POST">
+    <img  class="mb-4" src="assets/scales.png" alt="" width="72" height="72" >
+
+    <div class="form-floating">
+      <input type="email" name="EMAIL" class="form-control" id="floatingInput" placeholder="name@example.com" required>
+      <label for="floatingInput">Email address</label>
+    </div>
+    <div class="form-floating">
+      <input  type="password" name="PASSWORD" class="form-control" id="floatingPassword" placeholder="Password" required>
+      <label for="floatingPassword">Password</label>
+    </div>
+    <!-- <div class="form-floating">
+        <input type="password" name="PASSWORDRepeat" class="form-control" id="floatingPassword" placeholder="Repeat Password">
+        <label for="floatingPassword"> Repeat Password</label>
+      </div>
+      <p id="noMatch" class="noMatch">Passwords are not matching. Try again</p> -->
+    </div>
+    <p>Already registered? Go to => <a href="/">Sign In</a></p>
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Create Account</button>
+
+<%- include('partials/footer'); -%>

@@ -5,18 +5,18 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const router = express.Router();
 const {dynamoClient, getUsers, getUserByID, addOrUpdateUser, deleteUser} = require("./dynamo");
-const { userInfo } = require("os");
+const ejs = require("ejs");
 
 
 const app = express();
-const TABLE_NAME = "WeightTracker";
+app.set('view engine', 'ejs');
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 
 
 app.get("/", function(req, res){
-    res.sendFile(path.join(__dirname + "/signin.html"));
+    res.render("signin");
 });
 
 app.post("/", async (req, res) => {
@@ -33,30 +33,35 @@ try{
     };
 } catch (err) {
     console.error(err);
-    res.sendFile(path.join(__dirname + "/signup.html"));
+    res.render("signup");
 }
 
 });
 
 app.get("/signup", function (req, res){
-    res.sendFile(path.join(__dirname + "/signup.html"));
+    res.render("signup");
 });
 
 
-app.post("/signup", function (req, res){
+app.post("/signup", async (req, res) => {
     const newUser = {
         PASSWORD: req.body.PASSWORD,
         ID: req.body.EMAIL
     }
-if (getUserByID(newUser.ID) === {}){
-addOrUpdateUser(newUser);
-res.sendFile(path.join(__dirname + "/index.html"));
-} else {
-    res.send("You already have an account - go to Sign In")
-    console.log("user already exists");
-}
 
-});
+try{
+   const userSigningUp =  await getUserByID(newUser.ID);
+
+if (userSigningUp.Item.ID == newUser.ID){
+    console.log("user already exists");
+    res.send("you already have an account. go to sign in") 
+} 
+} catch (err) {
+    console.error("new user added");
+    addOrUpdateUser(newUser);
+    res.sendFile(path.join(__dirname + "/index.html"));
+  
+}});
 
 
 
