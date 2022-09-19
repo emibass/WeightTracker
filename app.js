@@ -6,7 +6,11 @@ const path = require("path");
 const router = express.Router();
 const {dynamoClient, getUsers, getUserByID, addOrUpdateUser, deleteUser} = require("./dynamo");
 const ejs = require("ejs");
+const session = require("express-session");
+const passport = require("passport");
+const bcrypt = require("bcrypt");
 
+const initializePassport = require("./passport-config");
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -14,19 +18,32 @@ app.set('view engine', 'ejs');
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 
+// app.use(session({
+//     secret: 'no to zobaczmy czy bedzie dzialac',
+//     resave: false,
+//     saveUninitialized: false
+//   }));
+
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.get("/", function(req, res){
-    res.render("signin");
+    res.render("index");
 });
 
-app.post("/", async (req, res) => {
+//render signin (login) page
+app.get("/signin", function (req, res){
+    res.render("sigin");
+});
+
+app.post("/signin", async (req, res) => {
     const email = req.body.EMAIL;
     const password = req.body.PASSWORD;
 try{
     const user = await getUserByID(email);
     if (user.Item.PASSWORD == password){
         console.log(" you're clear to enter. welcome to pizza planet")
-        res.sendFile(path.join(__dirname + "/index.html"));
+        res.render("index");
     } else {
         console.log("wrong password");
         res.send("wrong password");
@@ -38,14 +55,16 @@ try{
 
 });
 
+
+//render signup (register) page
 app.get("/signup", function (req, res){
     res.render("signup");
 });
 
-
+//creating new users with email and password
 app.post("/signup", async (req, res) => {
     const newUser = {
-        PASSWORD: req.body.PASSWORD,
+        PASSWORD:  bcrypt.hash(req.body.PASSWORD, 10),
         ID: req.body.EMAIL
     }
 
@@ -59,7 +78,7 @@ if (userSigningUp.Item.ID == newUser.ID){
 } catch (err) {
     console.error("new user added");
     addOrUpdateUser(newUser);
-    res.sendFile(path.join(__dirname + "/index.html"));
+    res.render("index");
   
 }});
 
